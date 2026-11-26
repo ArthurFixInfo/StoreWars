@@ -55,21 +55,20 @@ form.addEventListener('submit', (event) => {
 
     function salvarImagem() {
         const arquivo = imagem.files[0]
-        const leitor = new FileReader()
-        leitor.onload = function(event) {
-            const imagemBase64 = event.target.result
-            localStorage.setItem(`imagem${idAlterar}`,imagemBase64)
+
+        if (arquivo) {
+            const leitor = new FileReader()
+
+            leitor.onload = function(event) {
+                const imagemBase64 = event.target.result
+                localStorage.setItem(`imagem${idAlterar}`, imagemBase64)
+                window.location.href = "listagem.html" // Só redireciona após salvar
+            }
+
+            leitor.readAsDataURL(arquivo)
+        } else {
+            window.location.href = "listagem.html"
         }
-        leitor.readAsDataURL(arquivo)
-        window.location.href = "listagem.html"
-    }
-
-    if (validar()) {
-        localStorage.setItem(`nome${idAlterar}`, nome)
-        localStorage.setItem(`desc${idAlterar}`, desc)
-        localStorage.setItem(`preco${idAlterar}`, preco)
-        salvarImagem()
-
     }
 
 
