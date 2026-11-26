@@ -1,4 +1,4 @@
-const form = document.getElementById("form") 
+const form = document.getElementById("form")
 
 const imgproduto = document.getElementById("imgproduto")
 const imagem = document.getElementById("imagem")
@@ -11,17 +11,27 @@ const essePreco = localStorage.getItem(`preco${idAlterar}`)
 const esseImagem = localStorage.getItem(`imagem${idAlterar}`)
 
 window.onload = function() {
-    document.getElementById("lugarcodigo").innerText = esseCodigo
-    document.getElementById("nome").value = esseNome
-    document.getElementById("descricao").value = esseDesc
-    document.getElementById("preco").value = essePreco
-    document.getElementById("imgproduto").src = esseImagem
-}
+    if (!idAlterar) {
+        alert("Produto não encontrado!");
+        window.location.href = "listagem.html";
+        return;
+    }
 
+    document.getElementById("lugarcodigo").innerText = esseCodigo ?? "";
+    document.getElementById("nome").value = esseNome ?? "";
+    document.getElementById("descricao").value = esseDesc ?? "";
+    document.getElementById("preco").value = essePreco ?? "";
+
+    if (esseImagem && esseImagem !== "null") {
+        imgproduto.src = esseImagem;
+    } else {
+        imgproduto.removeAttribute("src");
+    }
+}
 
 imagem.addEventListener("change", (event) => {
     const arquivo = event.target.files[0]
-    
+
     if (arquivo) {
         imgproduto.src = URL.createObjectURL(arquivo)
     }
@@ -29,12 +39,10 @@ imagem.addEventListener("change", (event) => {
 
 form.addEventListener('submit', (event) => {
     event.preventDefault()
-    
+
     const nome = document.getElementById("nome").value.trim()
     const desc = document.getElementById("descricao").value.trim()
     const preco = document.getElementById("preco").value
-    
-    
 
     function validar() {
         if ([nome, desc, preco].includes("")) {
@@ -50,7 +58,6 @@ form.addEventListener('submit', (event) => {
             return false
         }
         return true
-
     }
 
     function salvarImagem() {
@@ -62,7 +69,7 @@ form.addEventListener('submit', (event) => {
             leitor.onload = function(event) {
                 const imagemBase64 = event.target.result
                 localStorage.setItem(`imagem${idAlterar}`, imagemBase64)
-                window.location.href = "listagem.html" // Só redireciona após salvar
+                window.location.href = "listagem.html"
             }
 
             leitor.readAsDataURL(arquivo)
@@ -71,7 +78,12 @@ form.addEventListener('submit', (event) => {
         }
     }
 
-
+    if (validar()) {
+        localStorage.setItem(`nome${idAlterar}`, nome)
+        localStorage.setItem(`desc${idAlterar}`, desc)
+        localStorage.setItem(`preco${idAlterar}`, preco)
+        salvarImagem()
+    }
 })
 
 form.addEventListener('reset', (event) => {
